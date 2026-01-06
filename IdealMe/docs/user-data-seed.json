@@ -1,0 +1,266 @@
+{
+  "user": {
+    "name": "User",
+    "location": "Nigeria",
+    "timezone": "Africa/Lagos",
+    "occupation": "Frontend Engineer",
+    "company": "Mono",
+    "background": "Medical school graduate (2024)",
+    "currentStatus": "4-month focused period before potential house job"
+  },
+
+  "goals": [
+    {
+      "id": "personal-1m",
+      "title": "Achieve $1M personal wealth",
+      "targetAmount": 1000000,
+      "targetDate": "2026-04-30",
+      "status": "active",
+      "priority": "critical",
+      "reason": "Skip house job, financial freedom"
+    },
+    {
+      "id": "lab-5m",
+      "title": "Lab/Studio raises or makes $5M total",
+      "targetAmount": 5000000,
+      "targetDate": "2026-04-30",
+      "status": "active",
+      "priority": "high",
+      "reason": "Establish credible studio, fund projects"
+    },
+    {
+      "id": "design-mastery",
+      "title": "Master design to differentiate from other vibe coders",
+      "targetDate": "2026-04-30",
+      "status": "active",
+      "priority": "high",
+      "reason": "Make projects look professional, stand out"
+    },
+    {
+      "id": "prediction-market-expertise",
+      "title": "Deep expertise in prediction markets + making money monthly",
+      "targetDate": "2026-04-30",
+      "status": "active",
+      "priority": "high",
+      "reason": "Revenue diversification, leverage current projects"
+    },
+    {
+      "id": "vibe-coding-expert",
+      "title": "Become expert AI/vibe coder, known in space",
+      "targetDate": "2026-04-30",
+      "status": "active",
+      "priority": "medium",
+      "reason": "Career advancement, build faster"
+    }
+  ],
+
+  "projects": [
+    {
+      "id": "truthbounty",
+      "name": "TruthBounty",
+      "description": "Cross-platform reputation system for prediction markets",
+      "status": "active",
+      "fundingStatus": "pending",
+      "fundingAmount": { "min": 250000, "max": 1000000 },
+      "fundingSource": "Seedify Hackathon (Top 20)",
+      "votingDate": "2026-01-08T13:00:00Z",
+      "priority": "critical",
+      "category": "prediction-markets"
+    },
+    {
+      "id": "fantasy-ct",
+      "name": "Fantasy CT",
+      "description": "Fantasy league for Crypto Twitter",
+      "status": "active",
+      "fundingStatus": "none",
+      "priority": "high",
+      "needsAttention": "Marketing push required",
+      "category": "crypto"
+    }
+  ],
+
+  "learningGoals": [
+    {
+      "id": "vibe-coding-course",
+      "name": "Vibe Coding Course",
+      "type": "course",
+      "estimatedHours": 3,
+      "priority": "high",
+      "status": "not_started",
+      "category": "vibe-coding"
+    },
+    {
+      "id": "devouring-details",
+      "name": "Devouring Details",
+      "type": "course",
+      "description": "Design reasoning and details",
+      "priority": "critical",
+      "status": "not_started",
+      "category": "design"
+    },
+    {
+      "id": "emil-kowalski",
+      "name": "Emil Kowalski - Web Animation",
+      "type": "course",
+      "priority": "high",
+      "status": "not_started",
+      "category": "design"
+    },
+    {
+      "id": "polymarket-fundamentals",
+      "name": "Polymarket & Prediction Markets Deep Dive",
+      "type": "research",
+      "priority": "critical",
+      "status": "not_started",
+      "category": "prediction-markets",
+      "notes": "Start with bookmarked articles, filter noise for 2% that's real"
+    }
+  ],
+
+  "workPatterns": {
+    "peakProductivity": {
+      "start": "20:00",
+      "end": "00:00",
+      "timezone": "Africa/Lagos"
+    },
+    "typicalSleep": {
+      "bedtime": "00:00",
+      "wakeup": "08:00"
+    },
+    "monoWork": {
+      "dailyHours": 3,
+      "standupTime": "11:00",
+      "pattern": "Complete tasks before standup, then free for personal work"
+    },
+    "grindingCapacity": {
+      "hoursPerDay": 12,
+      "canExtend": true
+    },
+    "preferences": {
+      "finishBeforeStarting": true,
+      "naturalFlow": true,
+      "needsGoalsAndDeadlines": true,
+      "rigidSchedulesFail": true
+    }
+  },
+
+  "platforms": {
+    "twitter": {
+      "handle": "unknown",
+      "followers": 345,
+      "following": 597,
+      "postingFrequency": "2-3 daily (recent)",
+      "usagePattern": "Daily, mostly mobile",
+      "importance": "Critical for marketing and growth",
+      "buildingInPublic": false
+    },
+    "github": {
+      "activity": "Active",
+      "recentProjects": 8
+    }
+  },
+
+  "skills": {
+    "vibeCoding": {
+      "level": "intermediate-advanced",
+      "experience": "~1 year",
+      "proof": "Got professional job, built 8 projects",
+      "knowledgeGap": "No formal training"
+    },
+    "frontend": {
+      "level": "professional",
+      "currentRole": "Frontend Engineer at Mono"
+    },
+    "design": {
+      "level": "functional",
+      "goal": "exceptional",
+      "gap": "Systematic taste development, advanced skills"
+    },
+    "predictionMarkets": {
+      "level": "beginner",
+      "paradox": "Built projects on it but doesn't understand space"
+    }
+  },
+
+  "immediateTasks": [
+    {
+      "id": "truthbounty-rally",
+      "content": "TruthBounty rally for Seedify votes",
+      "deadline": "2026-01-08T13:00:00Z",
+      "priority": 100,
+      "project": "truthbounty"
+    },
+    {
+      "id": "message-liam",
+      "content": "Message Liam about student rally for TruthBounty",
+      "deadline": "2026-01-07T14:00:00Z",
+      "priority": 95,
+      "project": "truthbounty"
+    },
+    {
+      "id": "resume-mono",
+      "content": "Resume Mono work",
+      "deadline": "2026-01-07T08:00:00Z",
+      "priority": 90,
+      "source": "work"
+    }
+  ],
+
+  "constraints": {
+    "budget": {
+      "monthly": 10,
+      "currency": "USD",
+      "cannotAfford": ["Apple Developer Program ($99/yr)", "Google Play ($25)", "Twitter API ($200/mo)"]
+    },
+    "technical": {
+      "primaryDevice": "laptop",
+      "secondaryDevice": "mobile",
+      "internet": "mostly reliable",
+      "offlineNeed": "low priority"
+    }
+  },
+
+  "appPhilosophy": {
+    "mostImportantFeature": "self-improvement",
+    "coreValue": "Understanding user deeply to provide perfect assistance",
+    "approach": "Start simple, evolve through data",
+    "mustHave": [
+      "Data gathering and analysis",
+      "Pattern detection",
+      "Intelligent prioritization",
+      "Context-aware suggestions",
+      "Self-iteration capability"
+    ],
+    "mustAvoid": [
+      "Too many features (>50 overwhelming)",
+      "High friction input",
+      "Generic productivity advice",
+      "Rigid scheduling",
+      "Morning-focused notifications"
+    ]
+  },
+
+  "motivations": {
+    "primary": "Money ($1M personal minimum)",
+    "secondary": [
+      "Team success (friends/colleagues benefit)",
+      "Skill mastery (be known for excellence)",
+      "Freedom (skip house job, control path)",
+      "Impact (change lives, build meaningful things)"
+    ]
+  },
+
+  "failurePatterns": {
+    "inconsistency": "Without accountability or structure",
+    "mentalOverload": "Keeps too much in head vs systems",
+    "fragmentedAttention": "Gets carried away with other things",
+    "abandonedTools": "High friction leads to abandonment"
+  },
+
+  "successPatterns": {
+    "gymHabit": "8 months during COVID - worked because aligned with daily structure",
+    "monoJob": "Vibe coding turned into career",
+    "hackathons": "Built 8 projects in weeks when focused",
+    "teamwork": "Successful with right collaborators"
+  }
+}
