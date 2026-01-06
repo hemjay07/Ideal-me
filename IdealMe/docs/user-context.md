@@ -14,7 +14,7 @@
 
 ### Professional Background
 - **Current Role:** Frontend Engineer at Mono (Nigeria's leading financial data company)
-- **Start Date:** ~February 2024
+- **Start Date:** ~February 2025
 - **How He Got Job:** Vibe coding (built portfolio that landed the role)
 - **Work Complexity:** Not very difficult, manageable workload
 - **Time Investment:** ~3 hours/day max (often less on good days)
@@ -22,7 +22,7 @@
 - **Resuming:** January 7, 2026 (tomorrow)
 
 ### Medical Background
-- **Completed:** Medical school (2024)
+- **Completed:** Medical school (2025)
 - **Experience:** Juggled med school + Mono job simultaneously
 - **Challenge:** Lots of sleepless nights, switched to part-time near exams
 - **Next Step:** House job (residency) - may skip if makes $1M personal
@@ -154,7 +154,7 @@
 
 ### Vibe Coding
 - **Experience:** Been doing it for longer than recent weeks
-- **Proof:** Got Mono job through vibe coding (Feb 2024)
+- **Proof:** Got Mono job through vibe coding (Feb 2025)
 - **Recent:** Built 8 projects in weeks using Claude Code
 - **Knowledge Gap:** Never taken a course or deep-dived on Claude Code
 - **Learning Need:** Wants to take vibe coding course (few hours max)
@@ -552,7 +552,7 @@
 - **Path:** Courses + AI enhancement + community + practice
 
 ### AI/Vibe Coding
-- **Experience:** ~1 year (got Mono job Feb 2024)
+- **Experience:** ~1 year (got Mono job Feb 2025)
 - **Proof of Skill:** Built 8 projects, got professional job
 - **Tools:** Claude Code (primary)
 - **Knowledge Gap:** Never formally learned, all self-taught
