@@ -9,7 +9,7 @@
 
 ### Identity & Location
 - **Location:** Nigeria
-- **Age/Stage:** Recent medical school graduate (finished 2024)
+- **Age/Stage:** Recent medical school graduate (finished 2025)
 - **Current Status:** 4-month break before potential house job (may skip if financially successful)
 
 ### Professional Background
