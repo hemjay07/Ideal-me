@@ -1,0 +1,19 @@
+{
+  "name": "@idealme/core",
+  "version": "1.0.0",
+  "description": "Core types, database, and utilities for IdealMe",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.2.2"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.8",
+    "@types/node": "^20.10.6",
+    "typescript": "^5.3.3"
+  }
+}
