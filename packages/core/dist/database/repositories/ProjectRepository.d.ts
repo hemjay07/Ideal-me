@@ -1,8 +1,22 @@
-import { Project, ProjectStatus } from '../../types';
+import { Project, ProjectStatus, FundingStatus } from '../../types';
 import { DatabaseClient } from '../client';
 export declare class ProjectRepository {
     private db;
     constructor(dbClient: DatabaseClient);
+    /**
+     * Create a new project
+     */
+    create(input: {
+        name: string;
+        description?: string;
+        status?: ProjectStatus;
+        funding_amount?: number;
+        funding_status?: FundingStatus;
+        funding_source?: string;
+        priority?: number;
+        category?: string;
+        metadata?: Record<string, any>;
+    }): Project;
     /**
      * Find all projects
      */

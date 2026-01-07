@@ -247,18 +247,271 @@ export class InsightRepository {
   }
 
   /**
+   * THE MOAT - Advanced Analysis Methods
+   */
+
+  /**
+   * Detect when tasks don't map to user's goals/projects (wasted effort)
+   */
+  detectGoalMisalignment(): Insight[] {
+    const insights: Insight[] = [];
+
+    // Get all tasks from last 30 days
+    const totalStmt = this.db.prepare(`
+      SELECT COUNT(*) as count FROM tasks
+      WHERE created_at > datetime('now', '-30 days')
+    `);
+    const total = (totalStmt.get() as any).count;
+
+    if (total < 10) return insights; // Not enough data
+
+    // Count tasks with no project
+    const unalignedStmt = this.db.prepare(`
+      SELECT COUNT(*) as count FROM tasks
+      WHERE created_at > datetime('now', '-30 days')
+        AND project_id IS NULL
+    `);
+    const unaligned = (unalignedStmt.get() as any).count;
+
+    const unalignedPercent = (unaligned / total) * 100;
+
+    if (unalignedPercent > 30) {
+      insights.push(this.create({
+        type: 'pattern',
+        title: 'Many tasks don\'t map to your projects',
+        content: `${Math.round(unalignedPercent)}% of your tasks (${unaligned}/${total}) in the last 30 days don't map to any of your projects. This suggests you're getting distracted or working on things that don't align with your $1M goal.`,
+        confidence_score: Math.min(unalignedPercent / 100, 0.95),
+        impact_prediction: 'Eliminating unaligned work could free up 30%+ of your time for high-value projects',
+        metadata: { unaligned_count: unaligned, total_count: total, percent: unalignedPercent }
+      }));
+    }
+
+    // Detect high-value projects being neglected
+    const projectsStmt = this.db.prepare(`
+      SELECT
+        p.id,
+        p.name,
+        p.funding_amount,
+        p.priority,
+        COUNT(t.id) as task_count
+      FROM projects p
+      LEFT JOIN tasks t ON t.project_id = p.id AND t.created_at > datetime('now', '-30 days')
+      WHERE p.status = 'active'
+        AND p.funding_amount > 0
+      GROUP BY p.id
+      ORDER BY p.funding_amount DESC, p.priority DESC
+    `);
+
+    const projects = projectsStmt.all() as any[];
+
+    if (projects.length > 0) {
+      const topProject = projects[0];
+      if (topProject.task_count < 5) {
+        const fundingDisplay = `$${(topProject.funding_amount / 100).toLocaleString()}`;
+
+        insights.push(this.create({
+          type: 'suggestion',
+          title: `${topProject.name} is being neglected`,
+          content: `${topProject.name} has ${fundingDisplay} in potential funding but you've only created ${topProject.task_count} tasks for it in 30 days. This is your highest-value project - it should be your main focus.`,
+          confidence_score: 0.85,
+          impact_prediction: `Focusing on ${topProject.name} could secure ${fundingDisplay} funding and directly contribute to your $1M goal`,
+          metadata: { project_id: topProject.id, project_name: topProject.name, task_count: topProject.task_count }
+        }));
+      }
+    }
+
+    return insights;
+  }
+
+  /**
+   * Detect urgent deadlines and recommend immediate action
+   */
+  detectDeadlinePressure(): Insight[] {
+    const insights: Insight[] = [];
+
+    // Find tasks with deadlines in next 48 hours that aren't complete
+    const urgentStmt = this.db.prepare(`
+      SELECT
+        t.*,
+        p.name as project_name,
+        p.funding_amount
+      FROM tasks t
+      LEFT JOIN projects p ON t.project_id = p.id
+      WHERE t.completed_at IS NULL
+        AND t.deadline IS NOT NULL
+        AND datetime(t.deadline) <= datetime('now', '+2 days')
+        AND datetime(t.deadline) >= datetime('now')
+      ORDER BY t.deadline ASC
+    `);
+
+    const urgentTasks = urgentStmt.all() as any[];
+
+    if (urgentTasks.length > 0) {
+      const deadlineDate = new Date(urgentTasks[0].deadline);
+      const hoursUntil = (deadlineDate.getTime() - Date.now()) / 3600000;
+      const daysUntil = Math.ceil(hoursUntil / 24);
+
+      const projectName = urgentTasks[0].project_name || 'Unknown Project';
+
+      insights.push(this.create({
+        type: 'suggestion',
+        title: `Urgent: ${urgentTasks.length} tasks due in ${daysUntil} days`,
+        content: `You have ${urgentTasks.length} incomplete tasks for ${projectName} due in ${daysUntil} days (${Math.round(hoursUntil)} hours). You need to clear your schedule and focus exclusively on these to hit the deadline.`,
+        confidence_score: 0.95,
+        impact_prediction: 'Missing this deadline could jeopardize funding or damage reputation',
+        metadata: { urgent_task_count: urgentTasks.length, hours_until: hoursUntil, project: projectName }
+      }));
+    }
+
+    return insights;
+  }
+
+  /**
+   * Predict when user will hit financial goals based on current trajectory
+   */
+  predictFinancialTrajectory(): Insight[] {
+    const insights: Insight[] = [];
+
+    // Get $1M goal
+    const goalStmt = this.db.prepare(`
+      SELECT * FROM goals
+      WHERE type = 'financial'
+        AND status = 'active'
+        AND target_amount >= 100000000
+      ORDER BY target_amount DESC
+      LIMIT 1
+    `);
+
+    const goal = goalStmt.get() as any;
+    if (!goal) return insights;
+
+    // Calculate total pending funding from projects
+    const fundingStmt = this.db.prepare(`
+      SELECT SUM(funding_amount) as total
+      FROM projects
+      WHERE funding_status = 'pending'
+        OR funding_status = 'secured'
+    `);
+
+    const funding = (fundingStmt.get() as any).total || 0;
+    const currentProgress = goal.current_progress + funding;
+
+    const targetAmount = goal.target_amount;
+    const targetDate = new Date(goal.target_date);
+    const monthsUntilTarget = (targetDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24 * 30);
+
+    const percentComplete = (currentProgress / targetAmount) * 100;
+
+    if (percentComplete < 30 && monthsUntilTarget < 4) {
+      // Less than 30% complete with less than 4 months to go
+      const gap = targetAmount - currentProgress;
+      const monthlyNeed = gap / monthsUntilTarget;
+
+      insights.push(this.create({
+        type: 'pattern',
+        title: 'Financial trajectory: Behind schedule',
+        content: `You're ${Math.round(percentComplete)}% toward your $1M goal with ${Math.round(monthsUntilTarget)} months left. At current pace, you'll miss the April 2026 deadline. You need to secure $${Math.round(monthlyNeed / 100).toLocaleString()}/month to catch up.`,
+        confidence_score: 0.90,
+        impact_prediction: 'Need to 3x funding pipeline or delay goal timeline',
+        metadata: {
+          percent_complete: percentComplete,
+          months_remaining: monthsUntilTarget,
+          monthly_need: monthlyNeed,
+          gap: gap
+        }
+      }));
+    }
+
+    return insights;
+  }
+
+  /**
+   * Detect excessive context switching between projects (kills momentum)
+   */
+  detectContextSwitching(): Insight[] {
+    const insights: Insight[] = [];
+
+    // Count distinct projects worked on in last 7 days
+    const projectsStmt = this.db.prepare(`
+      SELECT COUNT(DISTINCT project_id) as count
+      FROM tasks
+      WHERE project_id IS NOT NULL
+        AND created_at > datetime('now', '-7 days')
+    `);
+
+    const projectCount = (projectsStmt.get() as any).count;
+
+    if (projectCount >= 5) {
+      insights.push(this.create({
+        type: 'pattern',
+        title: 'High context switching detected',
+        content: `You're switching between ${projectCount} different projects this week. Research shows context switching reduces productivity by 40%. You should focus on 1-2 projects max per week to maintain momentum.`,
+        confidence_score: 0.80,
+        impact_prediction: 'Reducing to 2 projects/week could 2x your output quality and speed while maintaining momentum',
+        metadata: { project_count: projectCount }
+      }));
+    }
+
+    return insights;
+  }
+
+  /**
+   * Detect causal patterns in task failures (blocked, dependencies, etc)
+   */
+  detectTaskFailurePatterns(): Insight[] {
+    const insights: Insight[] = [];
+
+    // Find tasks marked as blocked/having dependencies
+    const blockedStmt = this.db.prepare(`
+      SELECT
+        COUNT(*) as total,
+        SUM(CASE WHEN completed_at IS NOT NULL THEN 1 ELSE 0 END) as completed
+      FROM tasks
+      WHERE metadata IS NOT NULL
+        AND json_extract(metadata, '$.blocked') = 1
+        AND created_at > datetime('now', '-30 days')
+    `);
+
+    const blocked = blockedStmt.get() as any;
+
+    if (blocked.total >= 5) {
+      const completionRate = blocked.total > 0 ? blocked.completed / blocked.total : 0;
+
+      if (completionRate < 0.3) {
+        insights.push(this.create({
+          type: 'feature_proposal',
+          title: 'Add dependency tracking system',
+          content: `${blocked.total} tasks marked as "blocked" have only ${Math.round(completionRate * 100)}% completion rate. You need a proper dependency tracker to identify blockers early and unblock yourself faster.`,
+          confidence_score: 0.75,
+          impact_prediction: 'Dependency tracking could increase task completion rate by 50%',
+          metadata: { blocked_tasks: blocked.total, completion_rate: completionRate }
+        }));
+      }
+    }
+
+    return insights;
+  }
+
+  /**
    * Run all pattern detection and feature suggestions
    * This should be called periodically (e.g., daily) or when enough new activity has occurred
    */
   runAnalysis(): Insight[] {
     const allInsights: Insight[] = [];
 
-    // Detect patterns
+    // Basic patterns (already implemented)
     const notificationPattern = this.detectNotificationPatterns();
     if (notificationPattern) allInsights.push(notificationPattern);
 
     allInsights.push(...this.detectTaskCompletionPatterns());
     allInsights.push(...this.suggestFeatures());
+
+    // THE MOAT - Advanced causal analysis
+    allInsights.push(...this.detectGoalMisalignment());
+    allInsights.push(...this.detectDeadlinePressure());
+    allInsights.push(...this.predictFinancialTrajectory());
+    allInsights.push(...this.detectContextSwitching());
+    allInsights.push(...this.detectTaskFailurePatterns());
 
     return allInsights;
   }

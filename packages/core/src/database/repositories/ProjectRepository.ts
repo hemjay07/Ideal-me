@@ -10,6 +10,48 @@ export class ProjectRepository {
   }
 
   /**
+   * Create a new project
+   */
+  create(input: {
+    name: string;
+    description?: string;
+    status?: ProjectStatus;
+    funding_amount?: number;
+    funding_status?: FundingStatus;
+    funding_source?: string;
+    priority?: number;
+    category?: string;
+    metadata?: Record<string, any>;
+  }): Project {
+    const id = DatabaseClient.uuid();
+    const now = DatabaseClient.now();
+
+    const stmt = this.db.prepare(`
+      INSERT INTO projects (
+        id, name, description, status, funding_amount, funding_status,
+        funding_source, priority, category, created_at, updated_at, metadata
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    stmt.run(
+      id,
+      input.name,
+      input.description || null,
+      input.status || 'active',
+      input.funding_amount || null,
+      input.funding_status || null,
+      input.funding_source || null,
+      input.priority || 5,
+      input.category || null,
+      now,
+      now,
+      input.metadata ? JSON.stringify(input.metadata) : null
+    );
+
+    return this.findById(id)!;
+  }
+
+  /**
    * Find all projects
    */
   findAll(filters?: {

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InsightRepository = exports.ActivityLogRepository = exports.ProjectRepository = exports.TaskRepository = void 0;
+exports.GoalRepository = exports.InsightRepository = exports.ActivityLogRepository = exports.ProjectRepository = exports.TaskRepository = void 0;
 var TaskRepository_1 = require("./TaskRepository");
 Object.defineProperty(exports, "TaskRepository", { enumerable: true, get: function () { return TaskRepository_1.TaskRepository; } });
 var ProjectRepository_1 = require("./ProjectRepository");
@@ -9,3 +9,5 @@ var ActivityLogRepository_1 = require("./ActivityLogRepository");
 Object.defineProperty(exports, "ActivityLogRepository", { enumerable: true, get: function () { return ActivityLogRepository_1.ActivityLogRepository; } });
 var InsightRepository_1 = require("./InsightRepository");
 Object.defineProperty(exports, "InsightRepository", { enumerable: true, get: function () { return InsightRepository_1.InsightRepository; } });
+var GoalRepository_1 = require("./GoalRepository");
+Object.defineProperty(exports, "GoalRepository", { enumerable: true, get: function () { return GoalRepository_1.GoalRepository; } });
