@@ -1,11 +1,22 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import type { Insight } from '@idealme/core';
 
+interface ReadinessStats {
+  total_tasks: number;
+  completed_tasks: number;
+  high_priority_tasks: number;
+  notification_events: number;
+  manual_tasks_last_week: number;
+  ready_for_analysis: boolean;
+}
+
 export default function Insights() {
   const [pendingInsights, setPendingInsights] = useState<Insight[]>([]);
   const [approvedInsights, setApprovedInsights] = useState<Insight[]>([]);
   const [implementedInsights, setImplementedInsights] = useState<Insight[]>([]);
   const [loading, setLoading] = useState(true);
+  const [readinessStats, setReadinessStats] = useState<ReadinessStats | null>(null);
+  const [showStats, setShowStats] = useState(false);
 
   const fetchInsights = useCallback(async () => {
     if (!window.electronAPI) {
@@ -52,7 +63,13 @@ export default function Insights() {
   const handleRunAnalysis = async () => {
     if (!window.electronAPI) return;
     setLoading(true);
-    await window.electronAPI.insights.runAnalysis();
+    setShowStats(false);
+
+    const newInsights = await window.electronAPI.insights.runAnalysis();
+    const stats = await window.electronAPI.insights.getReadinessStats();
+
+    setReadinessStats(stats);
+    setShowStats(true);
     await fetchInsights();
   };
 
@@ -164,6 +181,65 @@ export default function Insights() {
           {loading ? 'Analyzing...' : '🔄 Run Analysis'}
         </button>
       </div>
+
+      {/* Readiness Stats - Show after running analysis */}
+      {showStats && readinessStats && (
+        <div className="mb-8 bg-dark-surface border border-dark-border rounded-lg p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-dark-text">Analysis Complete</h3>
+            <button
+              onClick={() => setShowStats(false)}
+              className="text-dark-muted hover:text-dark-text"
+            >
+              ✕
+            </button>
+          </div>
+
+          {readinessStats.ready_for_analysis ? (
+            <div className="space-y-3">
+              <p className="text-green-400">
+                ✓ Sufficient data available for analysis
+              </p>
+              {pendingInsights.length === 0 && (
+                <p className="text-dark-muted">
+                  No new patterns detected yet. Keep using IdealMe and patterns will emerge!
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <p className="text-yellow-400">
+                ⚠️ Not enough data yet for meaningful insights
+              </p>
+              <p className="text-dark-muted text-sm">Here's what I'm tracking:</p>
+              <div className="grid grid-cols-2 gap-4 mt-3">
+                <div className="bg-dark-bg rounded p-3">
+                  <div className="text-2xl font-bold text-primary-400">{readinessStats.total_tasks}</div>
+                  <div className="text-xs text-dark-muted">Total Tasks</div>
+                  <div className="text-xs text-dark-muted mt-1">Need: 10+</div>
+                </div>
+                <div className="bg-dark-bg rounded p-3">
+                  <div className="text-2xl font-bold text-primary-400">{readinessStats.completed_tasks}</div>
+                  <div className="text-xs text-dark-muted">Completed Tasks</div>
+                </div>
+                <div className="bg-dark-bg rounded p-3">
+                  <div className="text-2xl font-bold text-primary-400">{readinessStats.manual_tasks_last_week}</div>
+                  <div className="text-xs text-dark-muted">Manual Tasks (7 days)</div>
+                  <div className="text-xs text-dark-muted mt-1">Need: 15+ for template suggestion</div>
+                </div>
+                <div className="bg-dark-bg rounded p-3">
+                  <div className="text-2xl font-bold text-primary-400">{readinessStats.notification_events}</div>
+                  <div className="text-xs text-dark-muted">Notification Opens</div>
+                  <div className="text-xs text-dark-muted mt-1">Need: 5+ for timing pattern</div>
+                </div>
+              </div>
+              <p className="text-sm text-dark-muted mt-4">
+                💡 Tip: Go to the Inbox and create some tasks to start building data!
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Pending Insights - Need Review */}
       {pendingInsights.length > 0 && (

@@ -47,5 +47,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     approve: (id: string) => ipcRenderer.invoke('insights:approve', id),
     reject: (id: string) => ipcRenderer.invoke('insights:reject', id),
     runAnalysis: () => ipcRenderer.invoke('insights:runAnalysis'),
+    getReadinessStats: () => ipcRenderer.invoke('insights:getReadinessStats'),
   },
 });

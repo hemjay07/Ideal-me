@@ -212,3 +212,7 @@ ipcMain.handle('insights:reject', async (_, id) => {
 ipcMain.handle('insights:runAnalysis', async () => {
   return insightRepo?.runAnalysis() || [];
 });
+
+ipcMain.handle('insights:getReadinessStats', async () => {
+  return insightRepo?.getReadinessStats();
+});

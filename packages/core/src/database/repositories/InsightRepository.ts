@@ -264,6 +264,58 @@ export class InsightRepository {
   }
 
   /**
+   * Get insight readiness stats - shows what data is available for analysis
+   */
+  getReadinessStats(): {
+    total_tasks: number;
+    completed_tasks: number;
+    high_priority_tasks: number;
+    notification_events: number;
+    manual_tasks_last_week: number;
+    ready_for_analysis: boolean;
+  } {
+    // Count total tasks
+    const totalStmt = this.db.prepare('SELECT COUNT(*) as count FROM tasks');
+    const total = (totalStmt.get() as any).count;
+
+    // Count completed tasks
+    const completedStmt = this.db.prepare('SELECT COUNT(*) as count FROM tasks WHERE completed_at IS NOT NULL');
+    const completed = (completedStmt.get() as any).count;
+
+    // Count high priority tasks
+    const highPriorityStmt = this.db.prepare('SELECT COUNT(*) as count FROM tasks WHERE priority >= 80');
+    const highPriority = (highPriorityStmt.get() as any).count;
+
+    // Count notification events
+    const notificationStmt = this.db.prepare(`
+      SELECT COUNT(*) as count FROM activity_log
+      WHERE event_type = 'notification_opened'
+        AND timestamp > datetime('now', '-14 days')
+    `);
+    const notifications = (notificationStmt.get() as any).count;
+
+    // Count manual tasks in last week
+    const manualStmt = this.db.prepare(`
+      SELECT COUNT(*) as count FROM tasks
+      WHERE source = 'manual'
+        AND created_at > datetime('now', '-7 days')
+    `);
+    const manualTasks = (manualStmt.get() as any).count;
+
+    // Determine if ready (need at least 10 tasks or some activity)
+    const readyForAnalysis = total >= 10 || notifications >= 5 || manualTasks >= 15;
+
+    return {
+      total_tasks: total,
+      completed_tasks: completed,
+      high_priority_tasks: highPriority,
+      notification_events: notifications,
+      manual_tasks_last_week: manualTasks,
+      ready_for_analysis: readyForAnalysis,
+    };
+  }
+
+  /**
    * Map database row to Insight
    */
   private mapRowToInsight(row: any): Insight {
