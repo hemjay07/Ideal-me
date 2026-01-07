@@ -8,7 +8,10 @@ export default function Insights() {
   const [loading, setLoading] = useState(true);
 
   const fetchInsights = useCallback(async () => {
-    if (!window.electronAPI) return;
+    if (!window.electronAPI) {
+      setLoading(false);
+      return;
+    }
 
     setLoading(true);
     try {
@@ -16,11 +19,15 @@ export default function Insights() {
       const approved = await window.electronAPI.insights.getByStatus('approved');
       const implemented = await window.electronAPI.insights.getByStatus('implemented');
 
-      setPendingInsights(pending);
-      setApprovedInsights(approved);
-      setImplementedInsights(implemented);
+      setPendingInsights(pending || []);
+      setApprovedInsights(approved || []);
+      setImplementedInsights(implemented || []);
     } catch (error) {
       console.error('Failed to fetch insights:', error);
+      // Set empty arrays on error so UI shows empty state
+      setPendingInsights([]);
+      setApprovedInsights([]);
+      setImplementedInsights([]);
     } finally {
       setLoading(false);
     }

@@ -3,7 +3,11 @@ import { Insight, InsightType, InsightStatus } from '../../types';
 import { DatabaseClient } from '../client';
 
 export class InsightRepository {
-  constructor(private db: Database.Database) {}
+  private db: Database.Database;
+
+  constructor(dbClient: DatabaseClient) {
+    this.db = dbClient.getDb();
+  }
 
   /**
    * Create a new insight
