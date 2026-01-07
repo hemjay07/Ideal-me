@@ -1,12 +1,13 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
-import { getDatabase, TaskRepository, ProjectRepository, ActivityLogRepository } from '@idealme/core';
+import { getDatabase, TaskRepository, ProjectRepository, ActivityLogRepository, InsightRepository } from '@idealme/core';
 
 let mainWindow: BrowserWindow | null = null;
 let dbClient: ReturnType<typeof getDatabase> | null = null;
 let taskRepo: TaskRepository | null = null;
 let projectRepo: ProjectRepository | null = null;
 let activityRepo: ActivityLogRepository | null = null;
+let insightRepo: InsightRepository | null = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -58,6 +59,7 @@ function initializeDatabase() {
   taskRepo = new TaskRepository(dbClient);
   projectRepo = new ProjectRepository(dbClient);
   activityRepo = new ActivityLogRepository(dbClient);
+  insightRepo = new InsightRepository(dbClient);
 
   console.log('Database initialized successfully');
 }
@@ -188,4 +190,25 @@ ipcMain.handle('app:maximize', () => {
 
 ipcMain.handle('app:close', () => {
   mainWindow?.close();
+});
+
+// Insights
+ipcMain.handle('insights:getPending', async () => {
+  return insightRepo?.getPending() || [];
+});
+
+ipcMain.handle('insights:getByStatus', async (_, status) => {
+  return insightRepo?.findByStatus(status) || [];
+});
+
+ipcMain.handle('insights:approve', async (_, id) => {
+  return insightRepo?.updateStatus(id, 'approved');
+});
+
+ipcMain.handle('insights:reject', async (_, id) => {
+  return insightRepo?.updateStatus(id, 'rejected');
+});
+
+ipcMain.handle('insights:runAnalysis', async () => {
+  return insightRepo?.runAnalysis() || [];
 });

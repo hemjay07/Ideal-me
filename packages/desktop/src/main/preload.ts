@@ -39,4 +39,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
     maximize: () => ipcRenderer.invoke('app:maximize'),
     close: () => ipcRenderer.invoke('app:close'),
   },
+
+  // Insights
+  insights: {
+    getPending: () => ipcRenderer.invoke('insights:getPending'),
+    getByStatus: (status: string) => ipcRenderer.invoke('insights:getByStatus', status),
+    approve: (id: string) => ipcRenderer.invoke('insights:approve', id),
+    reject: (id: string) => ipcRenderer.invoke('insights:reject', id),
+    runAnalysis: () => ipcRenderer.invoke('insights:runAnalysis'),
+  },
 });
