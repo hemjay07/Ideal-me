@@ -95,7 +95,9 @@ export interface Resource {
 export type ActivityEventType =
   | 'task_completed'
   | 'task_created'
+  | 'task_started'
   | 'app_opened'
+  | 'app_closed'
   | 'resource_read'
   | 'resource_saved'
   | 'notification_opened'
