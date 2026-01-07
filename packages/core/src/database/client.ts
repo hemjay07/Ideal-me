@@ -33,7 +33,7 @@ export class DatabaseClient {
    * Run initial migration to set up schema
    */
   migrate() {
-    const schemaPath = path.join(__dirname, '../../../database/schema.sql');
+    const schemaPath = path.join(__dirname, '../../../../database/schema.sql');
     const schema = fs.readFileSync(schemaPath, 'utf-8');
 
     // Execute schema
@@ -46,7 +46,7 @@ export class DatabaseClient {
    * Seed initial data
    */
   seed() {
-    const migrationPath = path.join(__dirname, '../../../database/migrations/001_initial.sql');
+    const migrationPath = path.join(__dirname, '../../../../database/migrations/001_initial.sql');
     const migration = fs.readFileSync(migrationPath, 'utf-8');
 
     // Remove .read directive (not supported by better-sqlite3)
