@@ -15,16 +15,18 @@ const navigation = [
 export default function Layout() {
   const location = useLocation();
 
-  // Log page views
+  // Log page views (only if electronAPI is available)
   useEffect(() => {
-    window.electronAPI.activity.log('dashboard_viewed', 'app', undefined, undefined, {
-      path: location.pathname
-    });
+    if (window.electronAPI?.activity) {
+      window.electronAPI.activity.log('dashboard_viewed', 'app', undefined, undefined, {
+        path: location.pathname
+      });
+    }
   }, [location.pathname]);
 
-  const handleMinimize = () => window.electronAPI.app.minimize();
-  const handleMaximize = () => window.electronAPI.app.maximize();
-  const handleClose = () => window.electronAPI.app.close();
+  const handleMinimize = () => window.electronAPI?.app.minimize();
+  const handleMaximize = () => window.electronAPI?.app.maximize();
+  const handleClose = () => window.electronAPI?.app.close();
 
   return (
     <div className="h-screen flex flex-col bg-dark-bg text-dark-text">
