@@ -43,21 +43,25 @@ CREATE TABLE IF NOT EXISTS projects (
 -- Resources: Bookmarks, articles, courses, notes
 CREATE TABLE IF NOT EXISTS resources (
   id TEXT PRIMARY KEY,
-  type TEXT NOT NULL, -- 'article', 'video', 'course', 'tweet', 'note', 'design'
+  type TEXT NOT NULL, -- 'article', 'video', 'course', 'tweet', 'note', 'design', 'website'
   title TEXT,
   url TEXT,
   content TEXT, -- for notes or extracted content
   source TEXT, -- 'twitter', 'manual', 'youtube', 'share_sheet'
-  category TEXT, -- 'design', 'polymarket', 'vibe-coding', etc.
+  category TEXT, -- 'design', 'polymarket', 'vibe-coding', 'general'
+  thumbnail_url TEXT, -- auto-fetched preview image
+  project_id TEXT, -- optional link to projects
   read_at TIMESTAMP,
   bookmarked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  metadata JSON -- tweet data, author, tags, etc.
+  metadata JSON, -- tweet data, author, tags, etc.
+  FOREIGN KEY (project_id) REFERENCES projects(id)
 );
 
 CREATE INDEX IF NOT EXISTS idx_resources_type ON resources(type);
 CREATE INDEX IF NOT EXISTS idx_resources_category ON resources(category);
 CREATE INDEX IF NOT EXISTS idx_resources_read ON resources(read_at);
+CREATE INDEX IF NOT EXISTS idx_resources_project ON resources(project_id);
 
 -- Activity Log: Track all user interactions for pattern detection
 CREATE TABLE IF NOT EXISTS activity_log (

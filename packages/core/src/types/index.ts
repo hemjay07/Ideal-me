@@ -66,7 +66,8 @@ export type ResourceType =
   | 'course'
   | 'tweet'
   | 'note'
-  | 'design';
+  | 'design'
+  | 'website';
 
 export type ResourceCategory =
   | 'design'
@@ -79,12 +80,26 @@ export interface Resource {
   type: ResourceType;
   title?: string;
   url?: string;
-  content?: string;
+  content?: string; // notes or extracted content
   source?: string;
   category?: ResourceCategory;
+  thumbnail_url?: string; // auto-fetched preview image
+  project_id?: string; // optional link to project
   read_at?: string;
   bookmarked_at: string;
   created_at: string;
+  metadata?: Record<string, any>;
+}
+
+export interface CreateResourceInput {
+  type: ResourceType;
+  url: string;
+  title?: string;
+  content?: string; // user notes
+  category?: ResourceCategory;
+  thumbnail_url?: string;
+  project_id?: string;
+  source?: string;
   metadata?: Record<string, any>;
 }
 

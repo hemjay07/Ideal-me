@@ -35,7 +35,7 @@ export interface Project {
     updated_at: string;
     metadata?: Record<string, any>;
 }
-export type ResourceType = 'article' | 'video' | 'course' | 'tweet' | 'note' | 'design';
+export type ResourceType = 'article' | 'video' | 'course' | 'tweet' | 'note' | 'design' | 'website';
 export type ResourceCategory = 'design' | 'polymarket' | 'vibe-coding' | 'general';
 export interface Resource {
     id: string;
@@ -45,9 +45,22 @@ export interface Resource {
     content?: string;
     source?: string;
     category?: ResourceCategory;
+    thumbnail_url?: string;
+    project_id?: string;
     read_at?: string;
     bookmarked_at: string;
     created_at: string;
+    metadata?: Record<string, any>;
+}
+export interface CreateResourceInput {
+    type: ResourceType;
+    url: string;
+    title?: string;
+    content?: string;
+    category?: ResourceCategory;
+    thumbnail_url?: string;
+    project_id?: string;
+    source?: string;
     metadata?: Record<string, any>;
 }
 export type ActivityEventType = 'task_completed' | 'task_created' | 'task_started' | 'app_opened' | 'app_closed' | 'resource_read' | 'resource_saved' | 'notification_opened' | 'notification_dismissed' | 'project_updated' | 'course_progress' | 'design_saved' | 'dashboard_viewed';
