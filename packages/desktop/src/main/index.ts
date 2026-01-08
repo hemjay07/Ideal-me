@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
-import { getDatabase, TaskRepository, ProjectRepository, ActivityLogRepository, InsightRepository } from '@idealme/core';
+import { getDatabase, TaskRepository, ProjectRepository, ActivityLogRepository, InsightRepository, ResourceRepository } from '@idealme/core';
 
 let mainWindow: BrowserWindow | null = null;
 let dbClient: ReturnType<typeof getDatabase> | null = null;
@@ -8,6 +8,7 @@ let taskRepo: TaskRepository | null = null;
 let projectRepo: ProjectRepository | null = null;
 let activityRepo: ActivityLogRepository | null = null;
 let insightRepo: InsightRepository | null = null;
+let resourceRepo: ResourceRepository | null = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -60,6 +61,7 @@ function initializeDatabase() {
   projectRepo = new ProjectRepository(dbClient);
   activityRepo = new ActivityLogRepository(dbClient);
   insightRepo = new InsightRepository(dbClient);
+  resourceRepo = new ResourceRepository(dbClient);
 
   console.log('Database initialized successfully');
 }
@@ -215,4 +217,41 @@ ipcMain.handle('insights:runAnalysis', async () => {
 
 ipcMain.handle('insights:getReadinessStats', async () => {
   return insightRepo?.getReadinessStats();
+});
+
+// Resources
+ipcMain.handle('resources:create', async (_, input) => {
+  const resource = resourceRepo?.create(input);
+  if (resource && activityRepo) {
+    activityRepo.log('resource_saved', 'resource', resource.id);
+  }
+  return resource;
+});
+
+ipcMain.handle('resources:getAll', async (_, filters) => {
+  return resourceRepo?.findAll(filters) || [];
+});
+
+ipcMain.handle('resources:getRecent', async (_, limit) => {
+  return resourceRepo?.getRecent(limit || 20) || [];
+});
+
+ipcMain.handle('resources:search', async (_, query) => {
+  return resourceRepo?.search(query) || [];
+});
+
+ipcMain.handle('resources:findById', async (_, id) => {
+  return resourceRepo?.findById(id);
+});
+
+ipcMain.handle('resources:update', async (_, id, updates) => {
+  return resourceRepo?.update(id, updates);
+});
+
+ipcMain.handle('resources:delete', async (_, id) => {
+  return resourceRepo?.delete(id);
+});
+
+ipcMain.handle('resources:getCountsByCategory', async () => {
+  return resourceRepo?.getCountsByCategory() || {};
 });

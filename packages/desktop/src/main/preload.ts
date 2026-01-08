@@ -49,4 +49,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
     runAnalysis: () => ipcRenderer.invoke('insights:runAnalysis'),
     getReadinessStats: () => ipcRenderer.invoke('insights:getReadinessStats'),
   },
+
+  // Resources
+  resources: {
+    create: (input: any) => ipcRenderer.invoke('resources:create', input),
+    getAll: (filters?: any) => ipcRenderer.invoke('resources:getAll', filters),
+    getRecent: (limit?: number) => ipcRenderer.invoke('resources:getRecent', limit),
+    search: (query: string) => ipcRenderer.invoke('resources:search', query),
+    findById: (id: string) => ipcRenderer.invoke('resources:findById', id),
+    update: (id: string, updates: any) => ipcRenderer.invoke('resources:update', id, updates),
+    delete: (id: string) => ipcRenderer.invoke('resources:delete', id),
+    getCountsByCategory: () => ipcRenderer.invoke('resources:getCountsByCategory'),
+  },
 });

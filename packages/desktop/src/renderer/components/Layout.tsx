@@ -8,6 +8,7 @@ const navigation = [
   { name: 'Design Lab', path: '/design-lab', icon: '🎨' },
   { name: 'Polymarket', path: '/polymarket', icon: '📈' },
   { name: 'Vibe Coding', path: '/vibe-coding', icon: '💻' },
+  { name: 'References', path: '/resources', icon: '🔖' },
   { name: 'Insights', path: '/insights', icon: '💡' },
   { name: 'Settings', path: '/settings', icon: '⚙️' },
 ];
